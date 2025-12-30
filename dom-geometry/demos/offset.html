@@ -269,6 +269,15 @@
               <span id="val5-height" class="info-value">0px</span>
             </div>
           </div>
+
+          <div class="tip">
+            <h4>💡 实现技巧</h4>
+            <p>
+              本示例使用 <strong>ResizeObserver</strong> 监听元素尺寸变化后再读取 offsetWidth/Height。
+              直接在修改样式后同步读取可能因为浏览器渲染时机问题导致获取到旧值，ResizeObserver
+              能确保在尺寸真正变化后触发回调。
+            </p>
+          </div>
         </section>
 
         <section class="section">
@@ -364,6 +373,13 @@
       const width5 = document.getElementById('width5');
       const height5 = document.getElementById('height5');
 
+      // 用 ResizeObserver 监听实际尺寸变化
+      const resizeObserver = new ResizeObserver(() => {
+        document.getElementById('val5-width').textContent = box5.offsetWidth + 'px';
+        document.getElementById('val5-height').textContent = box5.offsetHeight + 'px';
+      });
+      resizeObserver.observe(box5);
+
       function updateBox5() {
         const width = width5.value;
         const height = height5.value;
@@ -373,9 +389,6 @@
         document.getElementById('box5-label').textContent = width + ' × ' + height;
         document.getElementById('width5-val').textContent = width;
         document.getElementById('height5-val').textContent = height;
-
-        document.getElementById('val5-width').textContent = box5.offsetWidth + 'px';
-        document.getElementById('val5-height').textContent = box5.offsetHeight + 'px';
       }
 
       width5.addEventListener('input', updateBox5);
