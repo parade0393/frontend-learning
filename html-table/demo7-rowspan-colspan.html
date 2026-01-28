@@ -1,0 +1,140 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>rowspan 与 colspan - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item active" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>rowspan 与 colspan</h1>
+        <p class="subtitle">合并行列，构建更复杂的表格布局</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>
+            <code>rowspan</code> 和 <code>colspan</code> 用于合并单元格，创建跨行或跨列的结构。
+            合并后的单元格会占据更多网格空间。
+          </p>
+          <p>
+            <strong>常见坑：</strong>每一行的“总列数”必须一致，否则表格会错位。 这里的总列数是把
+            <code>colspan</code> 计算进去后的占位数；合并并不破坏一致性，只是改变占位。 使用
+            <code>rowspan</code> 时，下一行要减少对应单元格，否则会出现错位与语义混乱。
+          </p>
+          <ul>
+            <li><strong>rowspan</strong>：跨多行</li>
+            <li><strong>colspan</strong>：跨多列</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>&lt;td rowspan="2"&gt;合并两行&lt;/td&gt;
+&lt;td colspan="3"&gt;合并三列&lt;/td&gt;</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">合并行列示例</span>
+              <table class="table-demo">
+                <thead>
+                  <tr>
+                    <th>时间段</th>
+                    <th>周一</th>
+                    <th>周二</th>
+                    <th>周三</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">上午</th>
+                    <td class="table-highlight" rowspan="2">产品评审</td>
+                    <td>数据分析</td>
+                    <td>设计讨论</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">下午</th>
+                    <td colspan="2">跨部门协作</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">晚间</th>
+                    <td>复盘</td>
+                    <td>学习</td>
+                    <td>分享</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="demo-code">
+              <pre><code>&lt;td rowspan="2"&gt;产品评审&lt;/td&gt;
+&lt;td colspan="2"&gt;跨部门协作&lt;/td&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

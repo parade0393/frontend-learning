@@ -1,0 +1,191 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>th 与 scope - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item active" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>th 与 scope</h1>
+        <p class="subtitle">用表头单元格明确行列关系</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>
+            <code>th</code> 表示表头单元格，<code>scope</code> 用来说明表头关联的范围。 常见值包括
+            <code>col</code>（列头）和 <code>row</code>（行头）。
+          </p>
+          <p><strong>表头的概念：</strong>表头既包括“列头”，也包括“行头”，两者都是表格的标题单元格。</p>
+          <p>
+            <strong>直白解释：</strong><code>scope</code> 对视觉样式几乎没有影响，它的作用是把“这格表头管哪一行/哪一列”
+            说明白，方便辅助技术或数据解析。若只做视觉展示，<code>scope</code> 不会改变页面效果，但依旧建议保留语义。
+          </p>
+          <p>
+            <strong>常见理解误区：</strong>表头不只存在于 <code>thead</code>。<code>tbody</code>
+            里的第一列也可以是行表头， 应使用 <code>th scope="row"</code> 表示“这一整行的标题”。
+          </p>
+          <p>
+            <strong>常见坑：</strong><code>scope</code> 只适用于结构简单的表格。 当存在多级表头或合并单元格时，应该用
+            <code>headers</code> + <code>id</code> 建立精确关系， 否则屏幕阅读器可能读错上下文。
+          </p>
+          <ul>
+            <li><strong>scope="col"</strong>：该表头作用于整列</li>
+            <li><strong>scope="row"</strong>：该表头作用于整行</li>
+            <li><strong>scope="colgroup"</strong>：列组表头，范围由 <code>colspan</code> 决定</li>
+            <li><strong>scope="rowgroup"</strong>：行组表头，范围由 <code>rowspan</code> 决定</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>&lt;th scope="col"&gt;姓名&lt;/th&gt;
+&lt;th scope="row"&gt;张三&lt;/th&gt;</code></pre>
+          <pre><code>&lt;th scope="colgroup" colspan="2"&gt;2024&lt;/th&gt;
+&lt;th scope="rowgroup" rowspan="3"&gt;华东大区&lt;/th&gt;</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">scope 示例</span>
+              <table class="table-demo">
+                <thead>
+                  <tr>
+                    <th scope="col">成员</th>
+                    <th scope="col">角色</th>
+                    <th scope="col">状态</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">林晓</th>
+                    <td>产品经理</td>
+                    <td>在岗</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">李宁</th>
+                    <td>前端开发</td>
+                    <td>休假</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">周琪</th>
+                    <td>设计师</td>
+                    <td>在岗</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="table-note">对视觉效果没有差异，但给表格“标注关系”：列头/行头对应哪一组数据。</p>
+              <span class="demo-preview-title">列组表头（colgroup）</span>
+              <table class="table-demo table-compact">
+                <thead>
+                  <tr>
+                    <th scope="col">指标</th>
+                    <th scope="colgroup" colspan="2">2024</th>
+                    <th scope="colgroup" colspan="2">2025</th>
+                  </tr>
+                  <tr>
+                    <th scope="col">类别</th>
+                    <th scope="col">Q1</th>
+                    <th scope="col">Q2</th>
+                    <th scope="col">Q1</th>
+                    <th scope="col">Q2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">订单量</th>
+                    <td>120</td>
+                    <td>150</td>
+                    <td>130</td>
+                    <td>170</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="demo-code">
+              <pre><code>&lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th scope="col"&gt;成员&lt;/th&gt;
+    &lt;th scope="col"&gt;角色&lt;/th&gt;
+    &lt;th scope="col"&gt;状态&lt;/th&gt;
+  &lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;th scope="row"&gt;林晓&lt;/th&gt;
+    &lt;td&gt;产品经理&lt;/td&gt;
+    &lt;td&gt;在岗&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;</code></pre>
+              <pre><code>&lt;th scope="colgroup" colspan="2"&gt;2024&lt;/th&gt;
+&lt;th scope="colgroup" colspan="2"&gt;2025&lt;/th&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
