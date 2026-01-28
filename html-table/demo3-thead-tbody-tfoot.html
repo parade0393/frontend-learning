@@ -1,0 +1,217 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>语义分区 - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item active" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>thead / tbody / tfoot</h1>
+        <p class="subtitle">使用语义分区让表格结构更清晰</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>
+            表格可通过 <code>thead</code>、<code>tbody</code>、<code>tfoot</code> 分区，明确表头、主体与表尾。
+            这不仅提升可读性，还方便浏览器和辅助技术理解内容。
+          </p>
+          <p>
+            <strong>常见坑：</strong><code>tfoot</code> 在源码中可以放在
+            <code>tbody</code> 之前，浏览器会自动调整渲染顺序。 同一张表允许多个
+            <code>tbody</code>，用于分组数据，但脚本遍历时要注意层级变化。
+          </p>
+          <ul>
+            <li><strong>thead</strong>：列标题区域</li>
+            <li><strong>tbody</strong>：数据主体区域</li>
+            <li><strong>tfoot</strong>：汇总或备注区域</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>&lt;table&gt;
+  &lt;thead&gt;...&lt;/thead&gt;
+  &lt;tbody&gt;...&lt;/tbody&gt;
+  &lt;tfoot&gt;...&lt;/tfoot&gt;
+&lt;/table&gt;</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">分区表格预览</span>
+              <table class="table-demo">
+                <thead>
+                  <tr>
+                    <th>项目</th>
+                    <th>数量</th>
+                    <th>金额</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>设计服务</td>
+                    <td>2</td>
+                    <td>¥ 8,000</td>
+                  </tr>
+                  <tr>
+                    <td>开发服务</td>
+                    <td>1</td>
+                    <td>¥ 12,000</td>
+                  </tr>
+                  <tr>
+                    <td>维护服务</td>
+                    <td>3</td>
+                    <td>¥ 4,500</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2">总计</td>
+                    <td>¥ 24,500</td>
+                  </tr>
+                </tfoot>
+              </table>
+              <span class="demo-preview-title">多个 tbody 分组</span>
+              <table class="table-demo table-compact">
+                <thead>
+                  <tr>
+                    <th>团队</th>
+                    <th>任务</th>
+                    <th>状态</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row" colspan="3">产品组</th>
+                  </tr>
+                  <tr>
+                    <td>需求梳理</td>
+                    <td>任务拆解</td>
+                    <td>进行中</td>
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr>
+                    <th scope="row" colspan="3">研发组</th>
+                  </tr>
+                  <tr>
+                    <td>接口联调</td>
+                    <td>功能开发</td>
+                    <td>排期中</td>
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr>
+                    <th scope="row" colspan="3">设计组</th>
+                  </tr>
+                  <tr>
+                    <td>视觉规范</td>
+                    <td>组件评审</td>
+                    <td>已完成</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="demo-code">
+              <pre><code>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;项目&lt;/th&gt;
+      &lt;th&gt;数量&lt;/th&gt;
+      &lt;th&gt;金额&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;设计服务&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;¥ 8,000&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;
+      &lt;td colspan="2"&gt;总计&lt;/td&gt;
+      &lt;td&gt;¥ 24,500&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;</code></pre>
+              <pre><code>&lt;thead&gt;...&lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;&lt;th colspan=&quot;3&quot;&gt;产品组&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;...&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;&lt;th colspan=&quot;3&quot;&gt;研发组&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;...&lt;/tr&gt;
+&lt;/tbody&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

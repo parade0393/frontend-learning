@@ -1,0 +1,162 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>colgroup 与 col - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item active" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>colgroup 与 col</h1>
+        <p class="subtitle">对列进行分组与统一样式控制</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>
+            <code>colgroup</code> 与 <code>col</code> 用于对列进行分组并设置宽度或样式，常用于大表格中统一控制列的样式。
+          </p>
+          <p>
+            <strong>直白理解：</strong><code>colgroup</code> 是可选的，不用也能正常显示。 列宽与合并列可以在
+            <code>th/td</code> 上完成，但当你需要“整列统一控制”时，<code>colgroup</code> 更干净。
+          </p>
+          <p>
+            <strong>常见坑：</strong><code>col</code> 只能影响少量与列相关的样式（如
+            <code>width</code>、<code>background</code>）， 并不能可靠地控制单元格的 <code>padding</code>、<code
+              >text-align</code
+            >
+            等属性。 需要更细的样式时应直接给 <code>th/td</code> 设置类名。
+          </p>
+          <ul>
+            <li><strong>colgroup</strong>：列分组容器</li>
+            <li><strong>col</strong>：具体列，可使用 <code>span</code> 合并多列</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>&lt;colgroup&gt;
+  &lt;col class="col-accent" /&gt;
+  &lt;col span="2" class="col-muted" /&gt;
+&lt;/colgroup&gt;</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">列样式分组</span>
+              <table class="table-demo">
+                <colgroup>
+                  <col class="col-accent" />
+                  <col class="col-muted" span="2" />
+                  <col />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>型号</th>
+                    <th>颜色</th>
+                    <th>材质</th>
+                    <th>库存</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>MX-01</td>
+                    <td>黑</td>
+                    <td>铝合金</td>
+                    <td>120</td>
+                  </tr>
+                  <tr>
+                    <td>MX-02</td>
+                    <td>灰</td>
+                    <td>镁合金</td>
+                    <td>85</td>
+                  </tr>
+                  <tr>
+                    <td>MX-03</td>
+                    <td>蓝</td>
+                    <td>碳纤维</td>
+                    <td>64</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="table-note">colgroup 常用于设置列宽、背景色或强调关键列。</p>
+            </div>
+            <div class="demo-code">
+              <pre><code>&lt;table&gt;
+  &lt;colgroup&gt;
+    &lt;col class="col-accent" /&gt;
+    &lt;col span="2" class="col-muted" /&gt;
+    &lt;col /&gt;
+  &lt;/colgroup&gt;
+  &lt;thead&gt;...&lt;/thead&gt;
+  &lt;tbody&gt;...&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
