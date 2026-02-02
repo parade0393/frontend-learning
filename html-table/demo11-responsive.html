@@ -1,0 +1,165 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>响应式表格 - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+    <style>
+      .table-scroll {
+        max-width: 720px;
+      }
+
+      .wide-table {
+        min-width: 1600px;
+        width: max-content;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item active" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>响应式表格</h1>
+        <p class="subtitle">通过滚动容器保证小屏可读</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>当表格列数较多时，移动端容易溢出。 常见做法是将表格放入可横向滚动的容器，同时设置最小宽度。</p>
+          <p>
+            <strong>常见坑：</strong>直接给 <code>table</code> 设置 <code>overflow-x</code> 通常无效，
+            必须使用外层容器。若只压缩列宽会导致可读性下降，建议设定 <code>min-width</code> 保持列宽稳定。
+          </p>
+          <p>
+            <strong>补充说明：</strong>当表格设置了 <code>width: 100%</code> 且没有 <code>min-width</code>，
+            浏览器会把列宽压缩到容器宽度内，导致看起来“不滚动”。解决方式是给表格或列设置
+            <code>min-width</code>，让它超过容器宽度，再由外层容器滚动承载。
+          </p>
+          <ul>
+            <li>使用外层容器控制滚动</li>
+            <li>给表格设置最小宽度防止挤压</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>&lt;div class="table-scroll"&gt;
+  &lt;table class="wide-table"&gt;...&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>.wide-table {
+  min-width: 640px;
+  width: max-content;
+}</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">可横向滚动的表格</span>
+              <div class="table-scroll">
+                <table class="table-demo wide-table">
+                  <thead>
+                    <tr>
+                      <th>项目</th>
+                      <th>负责人</th>
+                      <th>状态</th>
+                      <th>优先级</th>
+                      <th>开始时间</th>
+                      <th>截止时间</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>移动端改版</td>
+                      <td>陈洁</td>
+                      <td>进行中</td>
+                      <td>高</td>
+                      <td>06-01</td>
+                      <td>07-15</td>
+                    </tr>
+                    <tr>
+                      <td>客服系统升级</td>
+                      <td>王浩</td>
+                      <td>排期中</td>
+                      <td>中</td>
+                      <td>07-05</td>
+                      <td>08-10</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="demo-code">
+              <pre><code>.table-scroll {
+  overflow-x: auto;
+}
+
+.wide-table {
+  min-width: 640px;
+}</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

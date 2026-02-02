@@ -1,0 +1,163 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>边框与间距 - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item active" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>边框与间距</h1>
+        <p class="subtitle">border-collapse 与 border-spacing 的影响</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>
+            表格的边框可以通过 <code>border-collapse</code> 控制是否合并， 当使用 <code>border-spacing</code> 时需要设置
+            <code>border-collapse: separate</code>。
+          </p>
+          <p>
+            <strong>常见坑：</strong><code>border-spacing</code> 在 <code>collapse</code> 模式下会被忽略，
+            同时单元格的圆角在合并边框模式下不容易表现。 需要卡片式间距时请改用 <code>separate</code>。
+          </p>
+          <ul>
+            <li><strong>collapse</strong>：边框合并为单线</li>
+            <li><strong>separate</strong>：保留单元格间距</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>table {
+  border-collapse: collapse;
+}
+
+table.spacing {
+  border-collapse: separate;
+  border-spacing: 8px;
+}</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">边框模型对比</span>
+              <table class="table-demo">
+                <caption>
+                  border-collapse: collapse
+                </caption>
+                <tbody>
+                  <tr>
+                    <th>城市</th>
+                    <th>订单</th>
+                    <th>评分</th>
+                  </tr>
+                  <tr>
+                    <td>上海</td>
+                    <td>1,230</td>
+                    <td>4.8</td>
+                  </tr>
+                  <tr>
+                    <td>深圳</td>
+                    <td>980</td>
+                    <td>4.6</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table class="table-demo table-spacing">
+                <caption>
+                  border-spacing: 8px
+                </caption>
+                <tbody>
+                  <tr>
+                    <th>城市</th>
+                    <th>订单</th>
+                    <th>评分</th>
+                  </tr>
+                  <tr>
+                    <td>上海</td>
+                    <td>1,230</td>
+                    <td>4.8</td>
+                  </tr>
+                  <tr>
+                    <td>深圳</td>
+                    <td>980</td>
+                    <td>4.6</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="demo-code">
+              <pre><code>&lt;table class="table-demo"&gt;...&lt;/table&gt;
+
+&lt;table class="table-demo table-spacing"&gt;...&lt;/table&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

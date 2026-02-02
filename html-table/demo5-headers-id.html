@@ -1,0 +1,147 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>headers 与 id - HTML Table</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <!-- 左侧边栏导航 -->
+    <aside class="sidebar" aria-label="演示导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>HTML Table</h1>
+        <a class="back-home" href="index.html" aria-label="返回主页">← 返回主页</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="主导航">
+        <div class="nav-section">
+          <h3>基础结构</h3>
+          <a class="nav-item" href="demo1-basic.html">基础结构</a>
+          <a class="nav-item" href="demo2-caption.html">表格标题</a>
+          <a class="nav-item" href="demo3-thead-tbody-tfoot.html">语义分区</a>
+        </div>
+        <div class="nav-section">
+          <h3>表头与关联</h3>
+          <a class="nav-item" href="demo4-th-scope.html">th 与 scope</a>
+          <a class="nav-item active" href="demo5-headers-id.html">headers 与 id</a>
+        </div>
+        <div class="nav-section">
+          <h3>列与合并</h3>
+          <a class="nav-item" href="demo6-colgroup.html">colgroup 与 col</a>
+          <a class="nav-item" href="demo7-rowspan-colspan.html">rowspan 与 colspan</a>
+        </div>
+        <div class="nav-section">
+          <h3>布局与样式</h3>
+          <a class="nav-item" href="demo8-table-layout.html">table-layout</a>
+          <a class="nav-item" href="demo9-border-collapse.html">边框与间距</a>
+          <a class="nav-item" href="demo10-alignment.html">对齐方式</a>
+        </div>
+        <div class="nav-section">
+          <h3>可用性与响应式</h3>
+          <a class="nav-item" href="demo11-responsive.html">响应式表格</a>
+          <a class="nav-item" href="demo12-accessibility.html">表格可访问性</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>headers 与 id</h1>
+        <p class="subtitle">复杂表格中精确建立表头关联</p>
+
+        <section class="concept-section">
+          <h2>概念说明</h2>
+          <p>
+            当表格存在多级表头或跨列标题时，可以使用 <code>id</code> 与
+            <code>headers</code> 显式指定每个数据单元格的表头。 这能让辅助技术准确读出数据的上下文。
+          </p>
+          <p>
+            <strong>常见坑：</strong><code>id</code> 必须全局唯一，<code>headers</code> 里需要按空格列出相关表头的 id。
+            如果只写部分表头，会导致读屏缺失上下文；同时不要把 <code>headers</code> 写在表头单元格上。
+          </p>
+          <ul>
+            <li><strong>id</strong>：给表头单元格一个唯一标识</li>
+            <li><strong>headers</strong>：在数据单元格中引用相关表头</li>
+          </ul>
+        </section>
+
+        <section class="syntax-section">
+          <h2>基础语法</h2>
+          <pre><code>&lt;th id="h-2024"&gt;2024&lt;/th&gt;
+&lt;td headers="row-marketing h-2024 h-2024-q1"&gt;120&lt;/td&gt;</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>演示</h2>
+          <div class="demo-container">
+            <div class="demo-preview">
+              <span class="demo-preview-title">多级表头关联</span>
+              <table class="table-demo table-compact">
+                <thead>
+                  <tr>
+                    <th id="h-dept">部门</th>
+                    <th id="h-2024" colspan="2">2024</th>
+                    <th id="h-2025" colspan="2">2025</th>
+                  </tr>
+                  <tr>
+                    <th id="h-item" scope="col">预算项</th>
+                    <th id="h-2024-q1" scope="col">Q1</th>
+                    <th id="h-2024-q2" scope="col">Q2</th>
+                    <th id="h-2025-q1" scope="col">Q1</th>
+                    <th id="h-2025-q2" scope="col">Q2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th id="row-marketing" scope="row">市场</th>
+                    <td headers="row-marketing h-2024 h-2024-q1">120</td>
+                    <td headers="row-marketing h-2024 h-2024-q2">150</td>
+                    <td headers="row-marketing h-2025 h-2025-q1">130</td>
+                    <td headers="row-marketing h-2025 h-2025-q2">170</td>
+                  </tr>
+                  <tr>
+                    <th id="row-rd" scope="row">研发</th>
+                    <td headers="row-rd h-2024 h-2024-q1">200</td>
+                    <td headers="row-rd h-2024 h-2024-q2">240</td>
+                    <td headers="row-rd h-2025 h-2025-q1">220</td>
+                    <td headers="row-rd h-2025 h-2025-q2">260</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="table-note">headers 允许一个数据单元格关联多个表头，适合多级表头场景。</p>
+            </div>
+            <div class="demo-code">
+              <pre><code>&lt;th id="h-2024" colspan="2"&gt;2024&lt;/th&gt;
+&lt;th id="h-2024-q1"&gt;Q1&lt;/th&gt;
+
+&lt;th id="row-marketing" scope="row"&gt;市场&lt;/th&gt;
+&lt;td headers="row-marketing h-2024 h-2024-q1"&gt;120&lt;/td&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
