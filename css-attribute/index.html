@@ -1,0 +1,169 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="CSS 属性模块：收录不同 CSS 属性的系统讲解与演示，首个属性为 clip-path。" />
+    <title>CSS 属性模块</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <!-- 防止主题闪烁 -->
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+    <style>
+      body {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        padding: 40px 20px;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      header p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        font-weight: 400;
+      }
+
+      .intro-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border-left: 4px solid var(--primary);
+      }
+
+      .intro-card h2 {
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        font-size: 1.5rem;
+      }
+
+      .intro-card p {
+        color: var(--text-secondary);
+        margin-bottom: 10px;
+      }
+
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        content-visibility: auto;
+        contain-intrinsic-size: 600px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 600;
+        border: 1px solid var(--primary);
+        margin-top: 10px;
+      }
+
+      footer {
+        text-align: center;
+        color: var(--text-secondary);
+        margin-top: 60px;
+        padding-top: 30px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 20px 15px;
+        }
+
+        header h1 {
+          font-size: 2rem;
+        }
+
+        header p {
+          font-size: 1rem;
+        }
+
+        .intro-card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a class="back-link" href="../index.html" style="display: inline-block; margin-bottom: 20px">← 返回首页</a>
+        <h1>🧩 CSS 属性模块</h1>
+        <p>记录那些“独立但重要”的 CSS 属性，逐个拆解、循序渐进</p>
+      </header>
+
+      <section class="intro-card">
+        <h2>如何使用本模块</h2>
+        <p>每个属性都包含：</p>
+        <p>✅ 基础语法 → ✅ 常见形状与示例 → ✅ 兼容与降级 → ✅ 进阶技巧</p>
+        <p>你可以把它当作“属性百科”，按需查找或跟着进度深入。</p>
+      </section>
+
+      <section>
+        <h2 class="section-title">📚 属性列表</h2>
+        <div class="module-grid">
+          <a class="card demo-card" href="clip-path.html">
+            <div class="card-icon">✂️</div>
+            <h3>clip-path</h3>
+            <p>裁剪元素的可视区域，制作多边形、圆形、折角等高级视觉效果。</p>
+            <span class="tag">第 1 个属性</span>
+          </a>
+          <div class="card demo-card" style="opacity: 0.6">
+            <div class="card-icon">⏳</div>
+            <h3>更多属性</h3>
+            <p>下一批属性正在整理中…</p>
+            <span class="tag">持续更新</span>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>💡 提示：先从 clip-path 开始，掌握裁剪思维</p>
+        <p style="margin-top: 10px; color: var(--text-secondary)">📌 本模块专注“属性粒度”的实战讲解</p>
+      </footer>
+    </div>
+  </body>
+</html>

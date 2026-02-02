@@ -1,0 +1,692 @@
+<!doctype html>
+<html data-theme="light" lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="clip-path 渐进式教程：概念、语法、基础 demo、常见形状、兼容性与进阶技巧。" />
+    <title>clip-path 渐进式教程</title>
+    <link href="/src/styles/common.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <!-- 防止主题闪烁 -->
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('themeMode') || 'light';
+          const color = localStorage.getItem('primaryColor') || '#10b981';
+          let actualTheme = theme;
+          if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', actualTheme);
+          document.documentElement.style.setProperty('--primary', color);
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
+    <style>
+      .clip-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: center;
+        position: relative;
+      }
+
+      .clip-preview {
+        background: var(--gray-100);
+        border-radius: 16px;
+        padding: 30px;
+        border: 2px dashed var(--gray-300);
+        min-height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .clip-target {
+        width: 220px;
+        height: 220px;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 55%, #0ea5e9 100%);
+        box-shadow: var(--shadow-lg);
+        transition: clip-path 0.4s ease;
+      }
+
+      .clip-controls {
+        display: grid;
+        gap: 10px;
+      }
+
+      .clip-demo input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .clip-controls label {
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 2px solid var(--border-color);
+        background: var(--card-bg);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--text-primary);
+      }
+
+      .clip-controls label:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-1px);
+      }
+
+      .clip-code {
+        margin-top: 15px;
+        grid-column: 1 / -1;
+      }
+
+      .clip-code code {
+        display: none;
+      }
+
+      #shape-inset:checked ~ .clip-preview .clip-target {
+        clip-path: inset(12% 10% 18% 8% round 12%);
+      }
+
+      #shape-circle:checked ~ .clip-preview .clip-target {
+        clip-path: circle(45% at 50% 45%);
+      }
+
+      #shape-ellipse:checked ~ .clip-preview .clip-target {
+        clip-path: ellipse(45% 35% at 50% 50%);
+      }
+
+      #shape-polygon:checked ~ .clip-preview .clip-target {
+        clip-path: polygon(50% 0%, 100% 25%, 80% 100%, 20% 100%, 0% 25%);
+      }
+
+      #shape-path:checked ~ .clip-preview .clip-target {
+        clip-path: path('M 40 20 L 200 20 L 160 200 L 80 200 Z');
+      }
+
+      #shape-inset:checked ~ .clip-controls label[for='shape-inset'],
+      #shape-circle:checked ~ .clip-controls label[for='shape-circle'],
+      #shape-ellipse:checked ~ .clip-controls label[for='shape-ellipse'],
+      #shape-polygon:checked ~ .clip-controls label[for='shape-polygon'],
+      #shape-path:checked ~ .clip-controls label[for='shape-path'] {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+
+      #shape-inset:checked ~ .clip-code .code-inset,
+      #shape-circle:checked ~ .clip-code .code-circle,
+      #shape-ellipse:checked ~ .clip-code .code-ellipse,
+      #shape-polygon:checked ~ .clip-code .code-polygon,
+      #shape-path:checked ~ .clip-code .code-path {
+        display: block;
+      }
+
+      .basic-compare {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-top: 15px;
+      }
+
+      .basic-card {
+        background: var(--bg-secondary);
+        border-radius: 16px;
+        padding: 20px;
+        border: 2px solid var(--border-color);
+      }
+
+      .basic-box {
+        width: 100%;
+        height: 180px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+      }
+
+      .basic-box.clipped {
+        clip-path: circle(45% at 50% 45%);
+      }
+
+      .scene-demo {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin: 12px 0 20px;
+      }
+
+      .scene-card {
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .scene-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .scene-box {
+        width: 100%;
+        height: 140px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .scene-box.with-marker {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scene-marker {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #111827;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+        transform: translate(-50%, -50%);
+      }
+
+      .scene-marker::after,
+      .scene-marker::before {
+        content: '';
+        position: absolute;
+        background: rgba(17, 24, 39, 0.7);
+      }
+
+      .scene-marker::before {
+        width: 26px;
+        height: 2px;
+        left: -6px;
+        top: 6px;
+      }
+
+      .scene-marker::after {
+        width: 2px;
+        height: 26px;
+        left: 6px;
+        top: -6px;
+      }
+
+      .scene-inset {
+        clip-path: inset(8% 10% 12% 6%);
+      }
+
+      .scene-circle {
+        clip-path: circle(45% at 50% 50%);
+      }
+
+      .scene-circle-center {
+        clip-path: circle(45% at 50% 50%);
+      }
+
+      .scene-circle-tl {
+        clip-path: circle(45% at 25% 25%);
+      }
+
+      .scene-circle-br {
+        clip-path: circle(45% at 75% 75%);
+      }
+
+      .scene-ellipse {
+        clip-path: ellipse(55% 40% at 50% 50%);
+      }
+
+      .scene-polygon {
+        clip-path: polygon(0 0, 90% 0, 100% 12%, 100% 100%, 0 100%);
+      }
+
+      .scene-path {
+        clip-path: path('M 20 15 L 200 15 L 170 125 L 50 125 Z');
+      }
+
+      .scene-url {
+        clip-path: url(#ticket);
+      }
+
+      .demo-pair {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .fallback-box {
+        border-radius: 18px;
+        height: 180px;
+        background: linear-gradient(135deg, #34d399 0%, #22c55e 100%);
+      }
+
+      .fallback-box.rounded {
+        border-radius: 32px;
+      }
+
+      .fallback-box.clipped {
+        clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+      }
+
+      .advanced-demo {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .advanced-card {
+        background: var(--bg-secondary);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        padding: 20px;
+      }
+
+      .advanced-clip {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #22c55e 100%);
+        border-radius: 14px;
+        clip-path: circle(35% at 30% 50%);
+        transition: clip-path 0.5s ease;
+      }
+
+      .advanced-card:hover .advanced-clip {
+        clip-path: circle(60% at 70% 50%);
+      }
+
+      .advanced-steps {
+        margin-top: 12px;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 15px;
+      }
+
+      .tips-grid .card {
+        padding: 20px;
+      }
+
+      @media (max-width: 900px) {
+        .clip-demo {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body data-demo="clip-path">
+    <a class="skip-link" href="#main-content">跳转到主要内容</a>
+
+    <aside class="sidebar" aria-label="属性导航" role="navigation">
+      <div class="sidebar-header">
+        <h1>CSS 属性模块</h1>
+        <a class="back-home" href="index.html" aria-label="返回列表">← 返回列表</a>
+      </div>
+      <nav class="sidebar-nav" aria-label="属性列表">
+        <div class="nav-section">
+          <h3>属性</h3>
+          <a class="nav-item active" href="clip-path.html">clip-path</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main id="main-content" class="main-content" role="main">
+      <div class="demo-page">
+        <h1>✂️ clip-path</h1>
+        <p class="subtitle">语法 + 示例的结构：先讲清参数，再看实际场景</p>
+
+        <section id="syntax" class="section">
+          <h2>语法与参数含义</h2>
+          <p>
+            <span class="inline-code">clip-path</span> 的核心是“裁剪形状”。 形状可以是基本几何（basic-shape）或 SVG
+            路径。
+          </p>
+          <div class="code-block">
+            <code>
+              clip-path: inset(top right bottom left round radius);<br />
+              clip-path: circle(radius at cx cy);<br />
+              clip-path: ellipse(rx ry at cx cy);<br />
+              clip-path: polygon(x1 y1, x2 y2, ...);<br />
+              clip-path: path("SVG Path");<br />
+              clip-path: url(#clipPathId);
+            </code>
+          </div>
+          <ul>
+            <li>
+              <span class="inline-code">inset()</span>：四边向内裁剪。<span class="inline-code"
+                >top/right/bottom/left</span
+              >
+              从 元素边框内侧开始计算，<strong>px</strong> 是固定长度，<strong>%</strong> 相对元素自身宽高：
+              <span class="inline-code">top/bottom</span> 按高度百分比，<span class="inline-code">left/right</span>
+              按宽度百分比。
+            </li>
+            <li>
+              <span class="inline-code">round</span>：可选，给 inset 的四角加圆角，支持 1-4 个值（类似
+              <span class="inline-code">border-radius</span>）。
+            </li>
+            <li>
+              <span class="inline-code">circle()</span>：圆形裁剪。<span class="inline-code">radius</span> 用 px
+              时是固定半径； 用 % 时相对元素盒子的“参考尺寸”（通常可理解为较小边的百分比）。
+              <span class="inline-code">at cx cy</span> 是圆心位置，% 相对元素宽/高。
+            </li>
+            <li>
+              <span class="inline-code">ellipse()</span>：椭圆裁剪。<span class="inline-code">rx ry</span>
+              分别是水平/垂直半径； px 为固定值，% 分别相对元素宽与高。<span class="inline-code">at cx cy</span>
+              控制椭圆中心。
+            </li>
+            <li>
+              <span class="inline-code">polygon()</span>：多边形裁剪。每个点是一对坐标
+              <span class="inline-code">x y</span>， 坐标原点在元素左上角，x 向右、y 向下。% 分别相对元素宽与高。
+            </li>
+            <li>
+              <span class="inline-code">path()</span>：使用 SVG Path 语法，坐标单位通常为 px，原点在元素左上角，
+              适合复杂形状。
+            </li>
+            <li>
+              <span class="inline-code">url()</span>：引用 SVG 的 <span class="inline-code">&lt;clipPath&gt;</span>，
+              适合复用或更复杂图形。
+            </li>
+          </ul>
+          <div class="info-box">
+            <p>理解关键：裁剪的计算区域来自元素自己的“盒子”。当使用 % 时，横向按宽、纵向按高计算。</p>
+          </div>
+          <div class="info-box">
+            <p>
+              对于 <span class="inline-code">circle(45%)</span> 这样的写法，45% 表示“半径”，
+              参考元素的较短边（min(宽,高)）。不是弧度。
+            </p>
+          </div>
+          <div class="info-box">
+            <p>例子：元素尺寸 200×140，较短边=140 → 半径=0.45×140=63px。</p>
+          </div>
+        </section>
+
+        <section id="examples" class="section">
+          <h2>示例：典型场景 + 参数解释</h2>
+
+          <h3>1) inset()：内容聚焦 / 留白框</h3>
+          <p>
+            场景：让内容缩进出“安全边距”。<span class="inline-code">top/right/bottom/left</span> 从边缘向内裁剪。
+            这里使用 <span class="inline-code">top/bottom</span> 百分比按高度计算，左右按宽度计算。
+          </p>
+          <div class="scene-demo">
+            <div class="scene-card">
+              <div class="scene-label">预览</div>
+              <div class="scene-box scene-inset" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="info-box">
+            <p>例子：元素宽 300、高 200，inset(8% 10% 12% 6%) → 上裁剪 16px、右裁剪 30px、下裁剪 24px、左裁剪 18px。</p>
+          </div>
+          <div class="code-block">
+            <code>
+              .panel {<br />
+              &nbsp;&nbsp;clip-path: inset(8% 10% 12% 6%);<br />
+              }
+            </code>
+          </div>
+
+          <h3>2) circle()：头像裁剪 / 聚焦点</h3>
+          <p>
+            场景：头像、徽章、聚焦区域。<span class="inline-code">radius</span> 控制大小，
+            <span class="inline-code">at cx cy</span> 控制圆心位置。
+          </p>
+          <div class="scene-demo">
+            <div class="scene-card">
+              <div class="scene-label">圆心在中间（50% 50%）</div>
+              <div class="scene-box scene-circle-center with-marker" aria-hidden="true">
+                <span class="scene-marker" style="left: 50%; top: 50%"></span>
+              </div>
+            </div>
+            <div class="scene-card">
+              <div class="scene-label">圆心偏左上（25% 25%）</div>
+              <div class="scene-box scene-circle-tl with-marker" aria-hidden="true">
+                <span class="scene-marker" style="left: 25%; top: 25%"></span>
+              </div>
+            </div>
+            <div class="scene-card">
+              <div class="scene-label">圆心偏右下（75% 75%）</div>
+              <div class="scene-box scene-circle-br with-marker" aria-hidden="true">
+                <span class="scene-marker" style="left: 75%; top: 75%"></span>
+              </div>
+            </div>
+          </div>
+          <div class="info-box">
+            <p>例子：元素 200×140，circle(45% at 50% 50%) → 半径 63px， 圆心在 (100px, 70px)。</p>
+          </div>
+          <div class="code-block">
+            <code>
+              .avatar {<br />
+              &nbsp;&nbsp;clip-path: circle(45% at 50% 50%);<br />
+              }
+            </code>
+          </div>
+
+          <h3>3) ellipse()：胶囊头像 / 横向裁剪</h3>
+          <p>
+            场景：横向头像、强调条。<span class="inline-code">rx</span> 影响宽度，
+            <span class="inline-code">ry</span> 影响高度。
+          </p>
+          <div class="scene-demo">
+            <div class="scene-card">
+              <div class="scene-label">预览</div>
+              <div class="scene-box scene-ellipse" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="info-box">
+            <p>例子：元素 300×200，ellipse(55% 40% at 50% 50%) → rx=165px，ry=80px，中心点 (150px, 100px)。</p>
+          </div>
+          <div class="code-block">
+            <code>
+              .badge {<br />
+              &nbsp;&nbsp;clip-path: ellipse(55% 40% at 50% 50%);<br />
+              }
+            </code>
+          </div>
+
+          <h3>4) polygon()：卡片折角 / 对话框</h3>
+          <p>场景：折角卡片、标签。点位顺序决定轮廓，% 相对元素宽高。</p>
+          <div class="scene-demo">
+            <div class="scene-card">
+              <div class="scene-label">预览</div>
+              <div class="scene-box scene-polygon" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="info-box">
+            <p>例子：元素 300×200，点 (90% 0) = (270px, 0)，点 (100% 12%) = (300px, 24px)。</p>
+          </div>
+          <div class="code-block">
+            <code>
+              .card {<br />
+              &nbsp;&nbsp;clip-path: polygon(0 0, 90% 0, 100% 12%, 100% 100%, 0 100%);<br />
+              }
+            </code>
+          </div>
+
+          <h3>5) path()：复杂形状 / 品牌轮廓</h3>
+          <p>场景：复杂图形、品牌轮廓。使用 SVG Path，坐标单位通常为 px。</p>
+          <div class="scene-demo">
+            <div class="scene-card">
+              <div class="scene-label">预览</div>
+              <div class="scene-box scene-path" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="info-box">
+            <p>例子：path 中的坐标是像素单位，点 (210, 20) 表示距左 210px、距上 20px。</p>
+          </div>
+          <div class="code-block">
+            <code>
+              .shape {<br />
+              &nbsp;&nbsp;clip-path: path("M 30 20 L 210 20 L 180 200 L 60 200 Z");<br />
+              }
+            </code>
+          </div>
+
+          <h3>6) url()：复用 SVG clipPath</h3>
+          <p>场景：统一裁剪规则、可复用裁剪形状。</p>
+          <div class="scene-demo">
+            <div class="scene-card">
+              <div class="scene-label">预览</div>
+              <div class="scene-box scene-url" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="info-box">
+            <p>
+              例子：复用 SVG 里的 <span class="inline-code">clipPath id="ticket"</span>， 任意元素只需写
+              <span class="inline-code">clip-path: url(#ticket)</span>。
+            </p>
+          </div>
+          <svg aria-hidden="true" width="0" height="0">
+            <clipPath id="ticket">
+              <path d="M0,0 H240 V80 Q220,90 240,100 V200 H0 Z" />
+            </clipPath>
+          </svg>
+          <div class="code-block">
+            <code>
+              <span class="comment">&lt;svg width="0" height="0"&gt;</span><br />
+              &nbsp;&nbsp;<span class="comment">&lt;clipPath id="ticket"&gt;</span><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"
+                >&lt;path d="M0,0 H240 V80 Q220,90 240,100 V200 H0 Z" /&gt;</span
+              ><br />
+              &nbsp;&nbsp;<span class="comment">&lt;/clipPath&gt;</span><br />
+              <span class="comment">&lt;/svg&gt;</span><br />
+              <br />
+              .ticket {<br />
+              &nbsp;&nbsp;clip-path: url(#ticket);<br />
+              }
+            </code>
+          </div>
+
+          <h3>7) 常见形状快速切换</h3>
+          <p>选择不同形状，观察裁剪区域的变化。</p>
+          <div class="clip-demo">
+            <input id="shape-inset" name="shape" type="radio" checked />
+            <input id="shape-circle" name="shape" type="radio" />
+            <input id="shape-ellipse" name="shape" type="radio" />
+            <input id="shape-polygon" name="shape" type="radio" />
+            <input id="shape-path" name="shape" type="radio" />
+
+            <div class="clip-preview">
+              <div class="clip-target" aria-label="clip-path 预览区域"></div>
+            </div>
+
+            <div class="clip-controls">
+              <label for="shape-inset">inset() — 内边距裁剪</label>
+              <label for="shape-circle">circle() — 圆形裁剪</label>
+              <label for="shape-ellipse">ellipse() — 椭圆裁剪</label>
+              <label for="shape-polygon">polygon() — 多边形裁剪</label>
+              <label for="shape-path">path() — 自定义路径</label>
+            </div>
+
+            <div class="clip-code code-block">
+              <code class="code-inset">clip-path: inset(12% 10% 18% 8% round 12%);</code>
+              <code class="code-circle">clip-path: circle(45% at 50% 45%);</code>
+              <code class="code-ellipse">clip-path: ellipse(45% 35% at 50% 50%);</code>
+              <code class="code-polygon"> clip-path: polygon(50% 0%, 100% 25%, 80% 100%, 20% 100%, 0% 25%); </code>
+              <code class="code-path">clip-path: path('M 40 20 L 200 20 L 160 200 L 80 200 Z');</code>
+            </div>
+          </div>
+
+          <h3>8) 兼容与降级</h3>
+          <p>
+            某些旧浏览器或内核对 <span class="inline-code">clip-path</span> 支持不完整，建议配合
+            <span class="inline-code">@supports</span> 进行降级。
+          </p>
+          <div class="code-block">
+            <code>
+              .box {<br />
+              &nbsp;&nbsp;border-radius: 24px;<br />
+              }<br />
+              <br />
+              @supports (clip-path: circle(50%)) {<br />
+              &nbsp;&nbsp;.box {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;clip-path: circle(50% at 50% 50%);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;-webkit-clip-path: circle(50% at 50% 50%);<br />
+              &nbsp;&nbsp;}<br />
+              }
+            </code>
+          </div>
+          <div class="demo-pair">
+            <div class="card">
+              <h3>降级样式</h3>
+              <div class="fallback-box rounded" aria-hidden="true"></div>
+              <p class="mt-sm">使用 border-radius 保证基础视觉可用。</p>
+            </div>
+            <div class="card">
+              <h3>启用 clip-path</h3>
+              <div class="fallback-box clipped" aria-hidden="true"></div>
+              <p class="mt-sm">支持时再呈现更精细的裁剪形状。</p>
+            </div>
+          </div>
+
+          <h3>9) 进阶技巧：动画与变量</h3>
+          <p>clip-path 可以和动画、CSS 变量结合，做出动态裁剪效果。</p>
+          <div class="advanced-demo">
+            <div class="advanced-card">
+              <h3>悬停动画</h3>
+              <div class="advanced-clip" aria-hidden="true"></div>
+              <div class="advanced-steps">改变裁剪圆心与半径，实现“聚光灯”效果。</div>
+            </div>
+            <div class="advanced-card">
+              <h3>变量驱动</h3>
+              <div class="code-block">
+                <code>
+                  .avatar {<br />
+                  &nbsp;&nbsp;<span class="property">--r</span>: 42%;<br />
+                  &nbsp;&nbsp;clip-path: circle(var(--r) at 50% 50%);<br />
+                  }<br />
+                  <br />
+                  .avatar.is-zoom { --r: 60%; }
+                </code>
+              </div>
+              <div class="advanced-steps">用 class 切换变量值，方便 JS 控制。</div>
+            </div>
+          </div>
+
+          <h3>10) 实战提示</h3>
+          <div class="tips-grid">
+            <div class="card">
+              <h3>保持形状可读</h3>
+              <p>多边形点位不要太密集，优先可维护的结构。</p>
+            </div>
+            <div class="card">
+              <h3>避免过度裁剪</h3>
+              <p>裁剪区域过小会影响内容可读性，记得响应式调整。</p>
+            </div>
+            <div class="card">
+              <h3>动画更顺滑</h3>
+              <p>尽量在相同类型形状间过渡，避免跳变。</p>
+            </div>
+          </div>
+
+          <h3>11) 综合应用：聚光灯引导</h3>
+          <p>场景：新手引导。用变量控制圆形裁剪位置，配合 JS 逐步引导。</p>
+          <div class="code-block">
+            <code>
+              .spotlight {<br />
+              &nbsp;&nbsp;--x: 50%;<br />
+              &nbsp;&nbsp;--y: 50%;<br />
+              &nbsp;&nbsp;--r: 120px;<br />
+              &nbsp;&nbsp;clip-path: circle(var(--r) at var(--x) var(--y));<br />
+              }<br />
+              <br />
+              .step-2 { --x: 20%; --y: 30%; }<br />
+              .step-3 { --x: 80%; --y: 70%; }
+            </code>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
